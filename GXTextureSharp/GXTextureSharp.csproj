@@ -48,13 +48,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="libgxtexture.dll" Condition="'$(RuntimeIdentifier)'=='win-x64'">
+    <None Update="libgxtexture.dll" Condition="$([MSBuild]::IsOSPlatform('Windows'))">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="libc++.dll" Condition="'$(RuntimeIdentifier)'=='win-x64'">
+    <None Update="libc++.dll" Condition="$([MSBuild]::IsOSPlatform('Windows'))">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="libgxtexture.so" Condition="'$(RuntimeIdentifier)'=='linux-x64'">
+    <None Update="libgxtexture.so" Condition="$([MSBuild]::IsOSPlatform('Linux'))">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
