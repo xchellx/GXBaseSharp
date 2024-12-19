@@ -1,0 +1,77 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <Platforms>x64</Platforms>
+    <ErrorReport>none</ErrorReport>
+    <ProduceReferenceAssembly>True</ProduceReferenceAssembly>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AssemblyName>$(MSBuildProjectName)</AssemblyName>
+    <BaseOutputPath>bin</BaseOutputPath>
+    <BaseIntermediateOutputPath>obj</BaseIntermediateOutputPath>
+    <Company>Yonder</Company>
+    <Authors>Yonder</Authors>
+    <Title>$(AssemblyName)</Title>
+    <Product>$(AssemblyName)</Product>
+    <Description>A C# managed wrapper around an unmanaged library gxtexture.</Description>
+    <Copyright>Copyright © Yonder 2024</Copyright>
+    <FileVersion>1.0.0</FileVersion>
+    <InformationalVersion>1.0.0</InformationalVersion>
+    <AssemblyVersion>1.0.0</AssemblyVersion>
+    <Version>1.0.0</Version>
+    <PackageLicenseFile>..\LICENSE</PackageLicenseFile>
+    <PackAsTool>False</PackAsTool>
+    <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
+    <Prefer32Bit>False</Prefer32Bit>
+    <DisableRuntimeMarshalling>True</DisableRuntimeMarshalling>
+    <IsAotCompatible>true</IsAotCompatible>
+    <IsTrimmable>true</IsTrimmable>
+    <TrimmerSingleWarn>false</TrimmerSingleWarn>
+  </PropertyGroup>
+
+  <PropertyGroup  Condition="'$(Configuration)' == 'Release'">
+    <StripSymbols>true</StripSymbols>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="$(SolutionDir)\extern\UtilSharp\UtilSharp\UtilSharp.csproj" />
+    <TrimmerRootAssembly Include="UtilSharp" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="libgxtexture.dll" Condition="'$(RuntimeIdentifier)'=='win-x64'">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="libc++.dll" Condition="'$(RuntimeIdentifier)'=='win-x64'">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="libgxtexture.so" Condition="'$(RuntimeIdentifier)'=='linux-x64'">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command="$(SolutionDir)/extern/gxtexture_base_build/build.cmd gxtexture 1 &amp;&amp; $(SolutionDir)/extern/gxtexture_base_build/install.cmd gxtexture $(ProjectDir) 1" Condition="$([MSBuild]::IsOSPlatform('Windows'))" />
+    <Exec Command="$(SolutionDir)/extern/gxtexture_base_build/build.sh gxtexture 1 &amp;&amp; $(SolutionDir)/extern/gxtexture_base_build/install.sh gxtexture $(ProjectDir) 1" Condition="$([MSBuild]::IsOSPlatform('Linux'))" />
+  </Target>
+
+  <Target Name="PostClean" AfterTargets="Clean">
+    <Exec Command="$(SolutionDir)/extern/gxtexture_base_build/clean.cmd gxtexture $(ProjectDir) 1" Condition="$([MSBuild]::IsOSPlatform('Windows'))" />
+    <Exec Command="$(SolutionDir)/extern/gxtexture_base_build/clean.sh gxtexture $(ProjectDir) 1" Condition="$([MSBuild]::IsOSPlatform('Linux'))" />
+  </Target>
+
+  <Target Name="PreRebuild" AfterTargets="BeforeRebuild">
+    <Exec Command="$(SolutionDir)/extern/gxtexture_base_build/clean.cmd gxtexture $(ProjectDir) 1 &amp;&amp; $(SolutionDir)/extern/gxtexture_base_build/build.cmd gxtexture 1 &amp;&amp; $(SolutionDir)/extern/gxtexture_base_build/install.cmd gxtexture $(ProjectDir) 1" Condition="$([MSBuild]::IsOSPlatform('Windows'))" />
+    <Exec Command="$(SolutionDir)/extern/gxtexture_base_build/clean.sh gxtexture $(ProjectDir) 1 &amp;&amp; $(SolutionDir)/extern/gxtexture_base_build/build.sh gxtexture 1 &amp;&amp; $(SolutionDir)/extern/gxtexture_base_build/install.sh gxtexture $(ProjectDir) 1" Condition="$([MSBuild]::IsOSPlatform('Linux'))" />
+  </Target>
+
+</Project>
