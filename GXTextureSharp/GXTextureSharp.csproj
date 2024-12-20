@@ -61,17 +61,17 @@
   </ItemGroup>
 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="$(SolutionDir)/extern/gxtexture_base_build/build.cmd gxtexture 1 &amp;&amp; $(SolutionDir)/extern/gxtexture_base_build/install.cmd gxtexture $(ProjectDir) 1" Condition="$([MSBuild]::IsOSPlatform('Windows'))" />
+    <Exec Command="$(SolutionDir)/extern/gxtexture_base_build/build.cmd gxtexture libc++.dll &amp;&amp; $(SolutionDir)/extern/gxtexture_base_build/install.cmd gxtexture $(ProjectDir) libc++.dll" Condition="$([MSBuild]::IsOSPlatform('Windows'))" />
     <Exec Command="$(SolutionDir)/extern/gxtexture_base_build/build.sh gxtexture &amp;&amp; $(SolutionDir)/extern/gxtexture_base_build/install.sh gxtexture $(ProjectDir)" Condition="$([MSBuild]::IsOSPlatform('Linux'))" />
   </Target>
 
   <Target Name="PostClean" AfterTargets="Clean">
-    <Exec Command="$(SolutionDir)/extern/gxtexture_base_build/clean.cmd gxtexture $(ProjectDir) 1" Condition="$([MSBuild]::IsOSPlatform('Windows'))" />
+    <Exec Command="$(SolutionDir)/extern/gxtexture_base_build/clean.cmd gxtexture $(ProjectDir) libc++.dll" Condition="$([MSBuild]::IsOSPlatform('Windows'))" />
     <Exec Command="$(SolutionDir)/extern/gxtexture_base_build/clean.sh gxtexture $(ProjectDir)" Condition="$([MSBuild]::IsOSPlatform('Linux'))" />
   </Target>
 
   <Target Name="PreRebuild" BeforeTargets="BeforeRebuild">
-    <Exec Command="$(SolutionDir)/extern/gxtexture_base_build/clean.cmd gxtexture $(ProjectDir) 1 &amp;&amp; $(SolutionDir)/extern/gxtexture_base_build/build.cmd gxtexture 1 &amp;&amp; $(SolutionDir)/extern/gxtexture_base_build/install.cmd gxtexture $(ProjectDir) 1" Condition="$([MSBuild]::IsOSPlatform('Windows'))" />
+    <Exec Command="$(SolutionDir)/extern/gxtexture_base_build/clean.cmd gxtexture $(ProjectDir) libc++.dll &amp;&amp; $(SolutionDir)/extern/gxtexture_base_build/build.cmd gxtexture libc++.dll &amp;&amp; $(SolutionDir)/extern/gxtexture_base_build/install.cmd gxtexture $(ProjectDir) libc++.dll" Condition="$([MSBuild]::IsOSPlatform('Windows'))" />
     <Exec Command="$(SolutionDir)/extern/gxtexture_base_build/clean.sh gxtexture $(ProjectDir) &amp;&amp; $(SolutionDir)/extern/gxtexture_base_build/build.sh gxtexture &amp;&amp; $(SolutionDir)/extern/gxtexture_base_build/install.sh gxtexture $(ProjectDir)" Condition="$([MSBuild]::IsOSPlatform('Linux'))" />
   </Target>
 
