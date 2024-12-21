@@ -57,7 +57,7 @@
   </ItemGroup>
 
   <Target Name="BNRSharp_GenerateGitVersion" BeforeTargets="GetGitHash;GenerateAssemblyAttributes">
-    <Exec Command="git rev-parse HEAD || echo unknown" ConsoleToMSBuild="true" IgnoreExitCode="true">
+    <Exec Command="git rev-parse HEAD || echo 0.0.0" ConsoleToMSBuild="true" IgnoreExitCode="true">
       <Output PropertyName="BNRSharp_OutputA" TaskParameter="ConsoleOutput"/>
     </Exec>
 
@@ -66,17 +66,12 @@
     </Exec>
 
     <PropertyGroup>
-      <BNRSharp_Version>$(BNRSharp_OutputA.Trim()) $(BNRSharp_OutputB.Trim())</BNRSharp_Version>
-      <BNRSharp_Tag>$(BNRSharp_OutputB.Trim())</BNRSharp_Tag>
+      <BNRSharp_InfoVersion>$(BNRSharp_OutputA.Trim()) based on $(BNRSharp_OutputB.Trim())</BNRSharp_InfoVersion>
+      <BNRSharp_Version>$(BNRSharp_OutputB.Trim().Substring(1))</BNRSharp_Version>
       <FileVersion>$(BNRSharp_Version)</FileVersion>
-      <InformationalVersion>$(BNRSharp_Version)</InformationalVersion>
-      <AssemblyVersion>$(BNRSharp_Tag)</AssemblyVersion>
+      <InformationalVersion>$(BNRSharp_InfoVersion)</InformationalVersion>
+      <AssemblyVersion>$(BNRSharp_Version)</AssemblyVersion>
     </PropertyGroup>
-    <ItemGroup>
-      <AssemblyMetadata Include="BNRSharp_GitVersionMetaData">
-        <Value>$(BNRSharp_Version)</Value>
-      </AssemblyMetadata>
-    </ItemGroup>
   </Target>
 
 </Project>

@@ -73,7 +73,7 @@
   </Target>
 
   <Target Name="GXTextureSharp_GenerateGitVersion" BeforeTargets="GetGitHash;GenerateAssemblyAttributes">
-    <Exec Command="git rev-parse HEAD || echo unknown" ConsoleToMSBuild="true" IgnoreExitCode="true">
+    <Exec Command="git rev-parse HEAD || echo 0.0.0" ConsoleToMSBuild="true" IgnoreExitCode="true">
       <Output PropertyName="GXTextureSharp_OutputA" TaskParameter="ConsoleOutput"/>
     </Exec>
 
@@ -82,17 +82,12 @@
     </Exec>
 
     <PropertyGroup>
-      <GXTextureSharp_Version>$(GXTextureSharp_OutputA.Trim()) $(GXTextureSharp_OutputB.Trim())</GXTextureSharp_Version>
-      <GXTextureSharp_Tag>$(GXTextureSharp_OutputB.Trim())</GXTextureSharp_Tag>
+      <GXTextureSharp_InfoVersion>$(GXTextureSharp_OutputA.Trim()) based on $(GXTextureSharp_OutputB.Trim())</GXTextureSharp_InfoVersion>
+      <GXTextureSharp_Version>$(GXTextureSharp_OutputB.Trim().Substring(1))</GXTextureSharp_Version>
       <FileVersion>$(GXTextureSharp_Version)</FileVersion>
-      <InformationalVersion>$(GXTextureSharp_Version)</InformationalVersion>
-      <AssemblyVersion>$(GXTextureSharp_Tag)</AssemblyVersion>
+      <InformationalVersion>$(GXTextureSharp_InfoVersion)</InformationalVersion>
+      <AssemblyVersion>$(GXTextureSharp_Version)</AssemblyVersion>
     </PropertyGroup>
-    <ItemGroup>
-      <AssemblyMetadata Include="GXTextureSharp_GitVersionMetaData">
-        <Value>$(GXTextureSharp_Version)</Value>
-      </AssemblyMetadata>
-    </ItemGroup>
   </Target>
 
 </Project>
