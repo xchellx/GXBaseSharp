@@ -18,10 +18,6 @@
     <Product>$(AssemblyName)</Product>
     <Description>A C# managed wrapper around an unmanaged library gxtexture.</Description>
     <Copyright>Copyright © Yonder 2024</Copyright>
-    <FileVersion>1.0.0</FileVersion>
-    <InformationalVersion>1.0.0</InformationalVersion>
-    <AssemblyVersion>1.0.0</AssemblyVersion>
-    <Version>1.0.0</Version>
     <PackageLicenseFile>..\LICENSE</PackageLicenseFile>
     <PackAsTool>False</PackAsTool>
     <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
@@ -30,6 +26,7 @@
     <IsAotCompatible>true</IsAotCompatible>
     <IsTrimmable>true</IsTrimmable>
     <TrimmerSingleWarn>false</TrimmerSingleWarn>
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
   </PropertyGroup>
 
   <PropertyGroup  Condition="'$(Configuration)' == 'Release'">
@@ -60,19 +57,42 @@
     </None>
   </ItemGroup>
 
-  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+  <Target Name="GXTextureSharp_PreBuild" BeforeTargets="PreBuildEvent">
     <Exec Command="$(SolutionDir)/extern/gxtexture_base_build/build.cmd gxtexture libc++.dll &amp;&amp; $(SolutionDir)/extern/gxtexture_base_build/install.cmd gxtexture $(ProjectDir) libc++.dll" Condition="$([MSBuild]::IsOSPlatform('Windows'))" />
     <Exec Command="$(SolutionDir)/extern/gxtexture_base_build/build.sh gxtexture &amp;&amp; $(SolutionDir)/extern/gxtexture_base_build/install.sh gxtexture $(ProjectDir)" Condition="$([MSBuild]::IsOSPlatform('Linux'))" />
   </Target>
 
-  <Target Name="PostClean" AfterTargets="Clean">
+  <Target Name="GXTextureSharp_PostClean" AfterTargets="Clean">
     <Exec Command="$(SolutionDir)/extern/gxtexture_base_build/clean.cmd gxtexture $(ProjectDir) libc++.dll" Condition="$([MSBuild]::IsOSPlatform('Windows'))" />
     <Exec Command="$(SolutionDir)/extern/gxtexture_base_build/clean.sh gxtexture $(ProjectDir)" Condition="$([MSBuild]::IsOSPlatform('Linux'))" />
   </Target>
 
-  <Target Name="PreRebuild" BeforeTargets="BeforeRebuild">
+  <Target Name="GXTextureSharp_PreRebuild" BeforeTargets="BeforeRebuild">
     <Exec Command="$(SolutionDir)/extern/gxtexture_base_build/clean.cmd gxtexture $(ProjectDir) libc++.dll &amp;&amp; $(SolutionDir)/extern/gxtexture_base_build/build.cmd gxtexture libc++.dll &amp;&amp; $(SolutionDir)/extern/gxtexture_base_build/install.cmd gxtexture $(ProjectDir) libc++.dll" Condition="$([MSBuild]::IsOSPlatform('Windows'))" />
     <Exec Command="$(SolutionDir)/extern/gxtexture_base_build/clean.sh gxtexture $(ProjectDir) &amp;&amp; $(SolutionDir)/extern/gxtexture_base_build/build.sh gxtexture &amp;&amp; $(SolutionDir)/extern/gxtexture_base_build/install.sh gxtexture $(ProjectDir)" Condition="$([MSBuild]::IsOSPlatform('Linux'))" />
+  </Target>
+
+  <Target Name="GXTextureSharp_GenerateGitVersion" BeforeTargets="GetGitHash;GenerateAssemblyAttributes">
+    <Exec Command="git rev-parse HEAD || echo unknown" ConsoleToMSBuild="true" IgnoreExitCode="true">
+      <Output PropertyName="GXTextureSharp_OutputA" TaskParameter="ConsoleOutput"/>
+    </Exec>
+
+    <Exec Command="git describe --tag --abbrev=0 || echo unknown" ConsoleToMSBuild="true" IgnoreExitCode="true">
+      <Output PropertyName="GXTextureSharp_OutputB" TaskParameter="ConsoleOutput"/>
+    </Exec>
+
+    <PropertyGroup>
+      <GXTextureSharp_Version>$(GXTextureSharp_OutputA.Trim()) $(GXTextureSharp_OutputB.Trim())</GXTextureSharp_Version>
+      <GXTextureSharp_Tag>$(GXTextureSharp_OutputB.Trim())</GXTextureSharp_Tag>
+      <FileVersion>$(GXTextureSharp_Version)</FileVersion>
+      <InformationalVersion>$(GXTextureSharp_Version)</InformationalVersion>
+      <AssemblyVersion>$(GXTextureSharp_Tag)</AssemblyVersion>
+    </PropertyGroup>
+    <ItemGroup>
+      <AssemblyMetadata Include="GXTextureSharp_GitVersionMetaData">
+        <Value>$(GXTextureSharp_Version)</Value>
+      </AssemblyMetadata>
+    </ItemGroup>
   </Target>
 
 </Project>
